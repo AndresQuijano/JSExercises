@@ -1,0 +1,226 @@
+CURSO JS FACILITO
+	Recursos para aprender más: 
+		Red de Mozilla: https://developer.mozilla.org/en-US/docs/Web
+		W3 schools: https://www.w3schools.com/
+		Consola para ejecutar comandos JavaScript y HTML: http://jsbin.com/?html,output
+	Notas:
+		-Var aplica a toda la función, let y const al bloque. Si no se pone nada, como nombre="Andrés" va al scope global
+		-Los scopes son dos: global y local
+		-Argumentos llenan los parámetros. La función define los parámetros y los argumentos es lo que se manda. El número de argumentos puede ser mayor al de parámetros o menor
+		-Si se va a definir un valor por defecto para un parámetro se debe definir para los últimos, no para los mayores. El hecho de ponerle un valor por defecto los hace opcionales.
+		-Una función es un first class citizen. Quiere decir que se puede mandar como argumento a una función y se le pueden asignar valores.
+		-Las funciones anónimas son esas que se ponen dentro de los parámetros de otra función y se ejecutan inmediatamente.
+		-Las arrow function conservan el valor de this. Las otras no.
+		-Variable global arguments:
+		function sumar(){
+			return arguments[0]+arguments[1];
+		}
+		sumar(1,2,3,4);
+		Pasar funciones como parámetros
+		let objeto={
+			demo: funcion(){
+				console.log(this);
+			}
+		}
+		let executor={
+			funcion:null,
+			execute:function(f){
+				this.funcion=f;
+				this.funcion();
+			}
+		}
+		executor.execute(objeto.demo);
+		-Las arrow function conservan el valor de this
+		let persona={
+			nombre:"Andrés",
+			apellido:"Quijano",
+			nombreCompleto: function(){
+				setTimeout(function(){
+					console.log(this.nombre+" "+this.apellido);
+				},1000);
+			}
+		}
+		persona.nombreCompleto();
+		vs esto: 
+		let persona={
+			nombre:"Andrés",
+			apellido:"Quijano",
+			nombreCompleto: function(){
+				setTimeout(()=>{
+					console.log(this.nombre+" "+this.apellido);
+				},1000);
+			}
+		}
+		persona.nombreCompleto();
+		-Call y apply sirven para determinar el contexto en que se va a ejecutar una función. La diferencia entre esos dos es que los argumentos
+		se envían en el primero normal y en el segundo en un arreglo. En bind es igual, sólo que no se ejecuta de una. Entonces uno  puede usar bind, 
+		definir el contexto y después pasárselo a un ejecutor como en el ejemplo pasado.
+		-Filter recibe una función como argumento. Se ejecuta por cada elemento. Si esa ejecución retorna true, el elemento se añade al arreglo final.
+		-map sirve para hacer una operación sobre todos los elementos de un arreglo
+		let cuadrados=numeros.map((el)=>el*el);
+		-Función constructora.Inicia con mayúscula:
+		function Curso(titulo){
+			this.titulo=titulo;
+			this.inscribir=function(nombreEstudiante){
+				console.log("El estudiante "+nombreEstudiante+" ha sido inscrito al curso "+this.titulo);
+			}
+		}
+		let cursoJava=new Curso("Curso de Java");
+		-JavaScript es orientado a prototipos, no a clases como Java. Las clases en JavaScript no existen realmente.
+		-
+		class Curso{
+			constructor(titulo){//Las propiedades se enlistan acá
+				this.titulo=titulo;
+			}
+			
+			inscribir(nombreEstudiante){//No se usa la palabra function
+				console.log("El estudiante "+nombreEstudiante+" ha sido inscrito");
+			}
+		}
+		let cursoJavaScript=new Curso("Curso profesional de JavaScript");
+		-Una clase puede extender de los build in objects como class MiFecha extends Date
+		-Una clase puede heredar de una función constructora
+		function Persona(){}
+		class Usuario extends Persona{}
+		-Métodos accesores (get y set)
+		class Usuario{
+			constructor(nombre){this._name=nombre}
+			
+			get name(){//El nombre del get y de la propiedad no pueden ser iguales
+				return this._name.charAt(0).toUpperCase() + this._name.slice(1);
+			}
+			
+			set name(nombre){//Recibe un parámetro y sólo uno
+				this._name=nombre;
+			}
+		}		
+		let user=new Usuario();
+		user.name="andrés";//Con minúscula. El método se llama como si estuviera llamando a la propiedad, sin paréntesis
+		console.log(user.name);
+		-Métodos estáticos
+		class UnaClase{
+			static metodoEstatico(parametro){}
+		}
+		-JS es un lenguaje orientado a prototipos. Se llamaba liveScript y se cambió el nombre para ser más comercial cuando Java era el que mandaba el mercado.
+		-Herencia de prototipos:
+		let animal=Object.create(null);
+
+		animal.vivo=true;
+
+		animal.estaVivo=function(){
+		  if(this.vivo){
+			console.log("Sigue vivo");
+		  }else{
+			console.log("Murió");
+		  }
+		}
+
+		let perro=Object.create(animal);
+
+		perro.estaVivo();
+
+		animal.estaVivo();
+
+
+		animal.vivo=false;
+
+
+		perro.estaVivo();
+
+		animal.estaVivo();
+		
+		cuando se llama un método lo busca en su prototipo. Si no existe se busca en el prototipo padre y si no en el padre de él. Lo busca hasta que llega a un
+		objeto que tiene un prototipo null.
+		-Las funciones tienen una propiedad prototype que es lo mismo que __proto__ de los objetos que se crean a partir de esa función
+		function User(){}
+		let user=new User();
+		console.log(user.__proto__);
+		console.log(User.prototype);
+		-Si se modifica el prototype de una función, se modifica el prototype de todos los objetos creados y todos los que han heredado de todos esos objetos
+		function User(){}
+
+		User.prototype.saludar=function(){
+		  console.log("Hola");
+		}
+
+		let user=new User();
+		user.saludar();
+
+		function Admin(){}
+		Admin.prototype=new User();
+		let admin=new Admin();
+		admin.saludar();
+
+		User.prototype.saludar=function(){
+		  console.log("Hola modificado");
+		}
+
+		user.saludar();
+		admin.saludar();
+		-Un callback es una función anónima que se pasa a una función asíncrona y que se va a ejecutar cuando la operación termine.
+		let operacion=function(param1,function(){//Acá va lo que se va a ejecutar cuando termine});
+		El intérprete deja eso para luego y sigue la ejecución. Cuando termina la operación, se pone un mensaje en la cola y el intérprete va leyendo
+		esos mensajes en orden de llegada y ejecutando cada callback en orden.
+		En cmd: npm install request (para hacer llamados a una página)
+		const request=require('request');
+		request('http://google.com',function(){
+			console.log('Terminó la petición de google');
+		});
+		console.log('Línea después de la petición');
+		En este caso se ejecuta la línea final antes de la que dice que la petición a google terminó.
+		-Promises
+		npm install request-promise
+		const rp=require('request-promise');
+		
+		rp('http://google.com')
+			.then(function(){
+				console.log('Terminó y todo bien');
+			})
+			.catch(function(err){
+				console.log(err);
+			});
+		La ejecución de rp() retorna un objeto de tipo promise que tiene un método .then al cual se le manda una función que es un callback y que
+		es lo que se va a hacer si la promesa termina bien. Tiene otro método .catch() al cual se le manda otro callback que es lo que se va a hacer
+		si algo malo ocurre.
+		-Los estados de un promise:
+			fullfiled: terminó bien
+			rejected: terminó mal
+			pending: se está ejecutando
+			setled: terminó (bien o mal pero terminó)
+		-Ejercicios de promises en Atom
+		-No se cubre en este curso async await ni observers
+		-Spread operator:
+		let numeros=[2,3,5];
+		function sumar(n1,n2,n3){return n1+n2+n3;}
+		let resultado=sumar(..numeros);
+		Sirve también para combinar arreglos u objetos
+		let objeto={clave:3}
+		let otro={propiedad:'algo'}
+		let combinado={...objeto,...otro}
+		console.log(combinado);
+		-for in es un ciclo para iterar las propiedades de un objeto
+		-Si tengo una función síncrona como sumar y le pongo una async al principio lo que pasa es que encapsula el return en un Promise:
+		return Promise.resolve(n1+n2)
+		-async simplifica el código
+		async function showGitHubInfo(){
+			let response=await fetch('https://api.github.com/users/urielhdz/repos');
+			let repos=await response.json();
+			console.log(repos);
+		}
+		showGitHubInfo();
+		-Los archivos de módulos que se van a importar en otros se pueden crear con extensión mjs en lugar de js como convención.
+		-Lo que se importa desde otro módulo entra como read only. No se puede modificar, pero si se modifica en el módulo, queda modificado en toda parte.
+		-Iteradores
+		-Generadores:
+		function* counter(){
+			for(int i=1;i<=5;i++){
+				yield i;
+			}
+		}
+		let generator=counter();
+		console.log(generator.next());
+		console.log(generator.next());
+		console.log(generator.next());
+		console.log(generator.next());
+		console.log(generator.next());
+		console.log(generator.next());
